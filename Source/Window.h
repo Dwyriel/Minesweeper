@@ -27,6 +27,7 @@ private:
 signals:
 private slots:
     void ButtonPressed(int id);
+    void RightButtonPressed(int id);
 
 public slots:
 };
