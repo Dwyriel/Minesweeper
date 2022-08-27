@@ -11,10 +11,11 @@
 class Window : public QWidget {
 Q_OBJECT
 public:
-    explicit Window(int width, int height, QWidget *parent = 0);
+    explicit Window(int width, int height, int maxMines, QWidget *parent = 0);
 
 private:
-    int height = 10, width = 10, spacing = 3, buttonSize = 30, maxMines = 30;
+    const int spacing = 3, buttonSize = 30;
+    int m_width = 10, m_height = 10, maxMines = 18;
     DButton **m_buttons;
     QGridLayout *m_grid;
     int *mineField = nullptr;
@@ -24,10 +25,15 @@ private:
 
     void FirstClick(int x, int y);
 
+    void showMessageBox(QString title, QString body);
+
 signals:
 private slots:
     void ButtonPressed(int id);
+
     void RightButtonPressed(int id);
+
+    void ArrowKeyPressed(int id, int key);
 
 public slots:
 };

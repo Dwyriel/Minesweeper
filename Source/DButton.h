@@ -19,13 +19,18 @@ public:
 protected:
     void mousePressEvent(QMouseEvent *e) override;
 
+    void keyPressEvent(QKeyEvent *e) override;
+
 private:
     int id;
     bool marked = false;
 
 signals:
     void ButtonPressed(int id);
+
     void RightButtonPressed(int id);
+
+    void ArrowKeyPressed(int id, int key);
 
 private slots:
 
