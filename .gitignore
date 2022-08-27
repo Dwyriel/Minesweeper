@@ -52,3 +52,25 @@ compile_commands.json
 *creator.user*
 
 *_qmlcache.qrc
+
+#build & cmake
+bin/
+obj/
+build/
+CMakeFiles/
+cmake_install.cmake
+CMakeCache.txt
+count_primes
+Makefile
+*cmake*/
+
+#IDEs
+.idea/
+CMakeSettings.json
+.vs\
+.vs/
+.vscode/
+.vscode\
+.kde*/
+*.kdev*
+.cache/*
