@@ -63,6 +63,7 @@ void Window::ButtonPressed(int id) {
         FirstClick(x, y); //generate game
     m_buttons[id]->setDisabled(true);
     if (mineField[id] == 1) {
+        m_buttons[id]->setText("\U0001F4A3");
         showMessageBox("You died", "You stepped on a mine \U0001F915");
         ResetGame();
     } else {
