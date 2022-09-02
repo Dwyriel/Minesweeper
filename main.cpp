@@ -1,10 +1,11 @@
 #include <QApplication>
-#include "Source/Window.h"
+#include "Source/DWindow.h"
+#include "Source/GameSettings.h"
 
 int main(int argc, char *argv[]) {
     srand(time(nullptr));
     QApplication app(argc, argv);
-    Window window = Window(10, 10, 20, nullptr);
-    window.show();
+    GameSettings gameSettings = GameSettings(nullptr);
+    gameSettings.show();
     return QApplication::exec();
 }

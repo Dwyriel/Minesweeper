@@ -7,11 +7,12 @@
 #include <QGridLayout>
 #include <QMessageBox>
 #include "DButton.h"
+#include "GlobalVars.h"
 
-class Window : public QWidget {
+class DWindow : public QWidget {
 Q_OBJECT
 public:
-    explicit Window(int width, int height, int maxMines, QWidget *parent = 0);
+    explicit DWindow(QWidget *parent = 0);
 
 private:
     const int spacing = 3, buttonSize = 30;
@@ -29,7 +30,7 @@ private:
 
     void checkNearbyTiles(int x, int y, int id);
 
-    static void showMessageBox(QString title, QString body);
+    static void showMessageBox(QString title, QString body, QWidget *parent = nullptr);
 
 signals:
 private slots:
