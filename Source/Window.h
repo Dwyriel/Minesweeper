@@ -25,7 +25,11 @@ private:
 
     void FirstClick(int x, int y);
 
-    void showMessageBox(QString title, QString body);
+    void checkWinCondition();
+
+    void checkNearbyTiles(int x, int y, int id);
+
+    static void showMessageBox(QString title, QString body);
 
 signals:
 private slots:

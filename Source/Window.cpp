@@ -5,6 +5,7 @@ Window::Window(int width, int height, int maxMines, QWidget *parent) : QWidget(p
     this->m_width = width;
     this->maxMines = maxMines;
     setWindowTitle("Minesweeper");
+    setWindowIcon(QIcon::fromTheme("face-angel"));
     setBaseSize((buttonSize + spacing) * width, (buttonSize + spacing) * height);
     resize(baseSize());
     m_grid = new QGridLayout(this);
@@ -12,7 +13,7 @@ Window::Window(int width, int height, int maxMines, QWidget *parent) : QWidget(p
     m_grid->setVerticalSpacing(spacing);
     m_buttons = new DButton *[width * height];
     mineField = new int[width * height];
-    for (int y = 0; y < height; y++)
+    for (int y = 0; y < height; y++) //generate buttons and connect their events
         for (int x = 0; x < width; x++) {
             int currIndex = x * height + y;
             m_buttons[currIndex] = new DButton(this);
@@ -59,39 +60,17 @@ void Window::ButtonPressed(int id) {
     int y = id / m_height;
     if (m_buttons[id]->isMarked())
         return;
-    if (isFirstClick)
-        FirstClick(x, y); //generate game
+    if (isFirstClick) //generate game
+        FirstClick(x, y);
     m_buttons[id]->setDisabled(true);
     if (mineField[id] == 1) {
         m_buttons[id]->setText("\U0001F4A3");
         showMessageBox("You died", "You stepped on a mine \U0001F915");
         ResetGame();
     } else {
-        int minesNearby = 0;
-        for (int ix = -1; ix < 2; ix++)
-            for (int iy = -1; iy < 2; iy++)
-                if (x + ix >= 0 && x + ix < m_height && y + iy >= 0 && y + iy < m_width)
-                    if (mineField[(y + iy) * m_height + (x + ix)])
-                        minesNearby++;
-        if (minesNearby > 0)
-            m_buttons[id]->setText(QString::number(minesNearby));
-        else {
-            for (int ix = -1; ix < 2; ix++)
-                for (int iy = -1; iy < 2; iy++)
-                    if (x + ix >= 0 && x + ix < m_height && y + iy >= 0 && y + iy < m_width)
-                        if (m_buttons[(y + iy) * m_height + (x + ix)]->isEnabled())
-                            ButtonPressed((y + iy) * m_height + (x + ix));
-        }
+        checkNearbyTiles(x, y, id);
     }
-    int totalButtonsLeft = 0;
-    for (int i = 0; i < m_width * m_height; i++) {
-        if (m_buttons[i]->isEnabled())
-            totalButtonsLeft++;
-    }
-    if (totalButtonsLeft == maxMines) {
-        showMessageBox("You won", "You cleared the field, Gratz \U0001F970");
-        ResetGame();
-    }
+    checkWinCondition();
 }
 
 void Window::ResetGame() {
@@ -124,9 +103,40 @@ void Window::FirstClick(int x, int y) {
     isFirstClick = false;
 }
 
+void Window::checkNearbyTiles(int x, int y, int id) {
+    int minesNearby = 0;
+    for (int ix = -1; ix < 2; ix++)
+        for (int iy = -1; iy < 2; iy++)
+            if (x + ix >= 0 && x + ix < m_height && y + iy >= 0 && y + iy < m_width)
+                if (mineField[(y + iy) * m_height + (x + ix)])
+                    minesNearby++;
+    if (minesNearby > 0)
+        m_buttons[id]->setText(QString::number(minesNearby));
+    else {
+        for (int ix = -1; ix < 2; ix++)
+            for (int iy = -1; iy < 2; iy++)
+                if (x + ix >= 0 && x + ix < m_height && y + iy >= 0 && y + iy < m_width)
+                    if (m_buttons[(y + iy) * m_height + (x + ix)]->isEnabled())
+                        ButtonPressed((y + iy) * m_height + (x + ix));
+    }
+}
+
+void Window::checkWinCondition() {
+    int totalButtonsLeft = 0;
+    for (int i = 0; i < m_width * m_height; i++) {
+        if (m_buttons[i]->isEnabled())
+            totalButtonsLeft++;
+    }
+    if (totalButtonsLeft == maxMines) {
+        showMessageBox("You won", "You found all the mines, Gratz \U0001F970");
+        ResetGame();
+    }
+}
+
 void Window::showMessageBox(QString title, QString body) {
     QMessageBox msgBox;
     msgBox.setWindowTitle(title);
+    msgBox.setWindowIcon(QIcon::fromTheme("dialog-warning"));
     msgBox.setText(body);
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
