@@ -13,12 +13,12 @@ void DButton::mousePressEvent(QMouseEvent *e) {
     if (e->button() == Qt::RightButton)
         emit RightButtonPressed(id);
     if (e->button() == Qt::LeftButton)
-        emit ButtonPressed(id);
+        emit ButtonPressed(id, false);
 }
 
 void DButton::keyPressEvent(QKeyEvent *e) {
     if ((e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return || e->key() == Qt::Key_Space) && !e->isAutoRepeat()) {
-        emit ButtonPressed(id);
+        emit ButtonPressed(id, false);
         return;
     }
     if(e->key() == Qt::Key_Up || e->key() == Qt::Key_Down){

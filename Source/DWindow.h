@@ -1,6 +1,7 @@
 #ifndef UNTITLED_WINDOW_H
 #define UNTITLED_WINDOW_H
 
+#include <vector>
 #include <QWidget>
 #include <QApplication>
 #include <QPushButton>
@@ -16,7 +17,7 @@ public:
 
 private:
     const int spacing = 3, buttonSize = 30;
-    int m_width = 10, m_height = 10, maxMines = 18;
+    int m_width = 10, m_height = 10, maxMines = 20, rounds = 0;
     DButton **m_buttons;
     QGridLayout *m_grid;
     int *mineField = nullptr;
@@ -24,7 +25,7 @@ private:
 
     void ResetGame();
 
-    void FirstClick(int x, int y);
+    void FirstClick(int id);
 
     void checkWinCondition();
 
@@ -34,7 +35,8 @@ private:
 
 signals:
 private slots:
-    void ButtonPressed(int id);
+
+    void ButtonPressed(int id, bool recursive = false);
 
     void RightButtonPressed(int id);
 

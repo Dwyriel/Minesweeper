@@ -55,18 +55,21 @@ void DWindow::RightButtonPressed(int id) {
     m_buttons[id]->setText(m_buttons[id]->isMarked() ? "\U0001F6A9" : "");
 }
 
-void DWindow::ButtonPressed(int id) {
+void DWindow::ButtonPressed(int id, bool recursive) {
+    if(!recursive)
+        rounds++;
     int x = id % m_height;
     int y = id / m_height;
     if (m_buttons[id]->isMarked())
         return;
     if (isFirstClick) //generate game
-        FirstClick(x, y);
+        FirstClick(id);
     m_buttons[id]->setDisabled(true);
     if (mineField[id] == 1) {
         m_buttons[id]->setText("\U0001F4A3");
-        showMessageBox("You died", "You stepped on a mine \U0001F915", this);
+        showMessageBox("You died", "<font size = 5>You stepped on a mine \U0001F915</font>", this);
         ResetGame();
+        return;
     } else {
         checkNearbyTiles(x, y, id);
     }
@@ -75,6 +78,7 @@ void DWindow::ButtonPressed(int id) {
 
 void DWindow::ResetGame() {
     isFirstClick = true;
+    rounds = 0;
     for (int y = 0; y < m_height; y++)
         for (int x = 0; x < m_width; x++) {
             int index = x * m_height + y;
@@ -85,20 +89,23 @@ void DWindow::ResetGame() {
         }
 }
 
-void DWindow::FirstClick(int x, int y) {
+void DWindow::FirstClick(int id) {
+    maxMines = maxMines > ((m_width * m_height) - 9) ? ((m_width * m_height) - 9) : maxMines;
     int mines = maxMines;
-    if (mines > (m_width * m_height) / 2)
-        mines = (m_width * m_height) / 2;
-    while (mines) {
-        int randx = rand() % m_height;
-        int randy = rand() % m_width;
-        bool canBePlaced;
-        if ((randx >= x - 1 && randx <= x + 1) && (randy >= y - 1 && randy <= y + 1))
+    int lowX_lowY = id - m_width - 1, highX_lowY = id - m_width + 1;
+    int lowX_medY = id - 1, highX_medY = id + 1;
+    int lowX_highY = id + m_width - 1, highX_highY = id + m_width + 1;
+    std::vector<int> placesToPlant;
+    for (int i = 0; i < m_width * m_height; i++){
+        if((i >= lowX_lowY && i <= highX_lowY) || (i >= lowX_medY && i <= highX_medY) || (i >= lowX_highY && i <= highX_highY))
             continue;
-        if (mineField[randy * m_height + randx] == 0 && randx != x && randy != y) {
-            mineField[randy * m_height + randx] = 1;
-            mines--;
-        }
+        placesToPlant.emplace_back(i);
+    }
+    while(mines){
+        int randNum = rand() % placesToPlant.size();
+        mineField[placesToPlant[randNum]] = 1;
+        placesToPlant.erase(placesToPlant.begin() + randNum);
+        mines--;
     }
     isFirstClick = false;
 }
@@ -117,7 +124,7 @@ void DWindow::checkNearbyTiles(int x, int y, int id) {
             for (int iy = -1; iy < 2; iy++)
                 if (x + ix >= 0 && x + ix < m_height && y + iy >= 0 && y + iy < m_width)
                     if (m_buttons[(y + iy) * m_height + (x + ix)]->isEnabled())
-                        ButtonPressed((y + iy) * m_height + (x + ix));
+                        ButtonPressed((y + iy) * m_height + (x + ix), true);
     }
 }
 
@@ -128,7 +135,7 @@ void DWindow::checkWinCondition() {
             totalButtonsLeft++;
     }
     if (totalButtonsLeft == maxMines) {
-        showMessageBox("You won", "You found all the mines, Gratz \U0001F970", this);
+        showMessageBox("You won", (rounds <= 3) ? "<font size = 15>\U0001F92D</font>" : "<font size = 5>You found all the mines, Gratz \U0001F970</font>", this);
         ResetGame();
     }
 }
@@ -138,6 +145,7 @@ void DWindow::showMessageBox(QString title, QString body, QWidget *parent) {
     msgBox.setWindowTitle(title);
     msgBox.setWindowIcon(QIcon::fromTheme("dialog-warning"));
     msgBox.setText(body);
+    msgBox.setStyleSheet("font-size = 20px");
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
     msgBox.exec();

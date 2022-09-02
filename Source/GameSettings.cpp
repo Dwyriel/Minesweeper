@@ -54,8 +54,8 @@ void GameSettings::PlayButtonPressed() {
     x = m_xLineEdit->text().toInt();
     y = m_yLineEdit->text().toInt();
     mines = m_minesLineEdit->text().toInt();
-    if (x < 1 || y < 1 || mines < 1) {
-        QString str = mines < 1 ? "Too few mines" : ((x < 1 ? "X " : "Y ") + QString("") + "can't be smaller than 0");
+    if (x < 5 || y < 5 || mines <= 4) {
+        QString str = mines <= 4 ? "Too few mines" : ((x < 5 ? "X " : "Y ") + QString("") + "can't be smaller than 5");
         showError(str);
         return;
     }

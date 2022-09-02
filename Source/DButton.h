@@ -26,7 +26,7 @@ private:
     bool marked = false;
 
 signals:
-    void ButtonPressed(int id);
+    void ButtonPressed(int id, bool rec);
 
     void RightButtonPressed(int id);
 
