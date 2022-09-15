@@ -10,11 +10,11 @@ Q_OBJECT
 public:
     explicit DButton(QWidget *parent = 0);
 
-    void setId(int i);
+    void SetId(int i);
 
-    bool isMarked();
+    bool IsMarked();
 
-    void setMarked(bool value);
+    void SetMarked(bool value);
 
 protected:
     void mousePressEvent(QMouseEvent *e) override;

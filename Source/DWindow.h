@@ -15,6 +15,9 @@ Q_OBJECT
 public:
     explicit DWindow(QWidget *parent = 0);
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 private:
     const int spacing = 3, buttonSize = 30;
     int m_width = 10, m_height = 10, maxMines = 20, rounds = 0;
@@ -27,13 +30,15 @@ private:
 
     void FirstClick(int id);
 
-    void checkWinCondition();
+    void CheckWinCondition();
 
-    void checkNearbyTiles(int x, int y, int id);
+    void CheckNearbyTiles(int x, int y, int id);
 
-    static void showMessageBox(QString title, QString body, QWidget *parent = nullptr);
+    static void ShowMessageBox(QString title, QString body, QWidget *parent = nullptr);
 
 signals:
+    void WindowClosed();
+
 private slots:
 
     void ButtonPressed(int id, bool recursive = false);

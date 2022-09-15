@@ -20,13 +20,18 @@ DWindow::DWindow(QWidget *parent) : QWidget(parent) {
             //m_buttons[currIndex]->setText(QString::fromStdString(std::to_string(x) + "," + std::to_string(y)));
             m_buttons[currIndex]->setMinimumSize(buttonSize, buttonSize);
             m_buttons[currIndex]->setMaximumSize(buttonSize * 10, buttonSize * 10);
-            m_buttons[currIndex]->setId(currIndex);
+            m_buttons[currIndex]->SetId(currIndex);
             m_grid->addWidget(m_buttons[currIndex], y, x);
             QObject::connect(m_buttons[currIndex], &DButton::ButtonPressed, this, &DWindow::ButtonPressed);
             QObject::connect(m_buttons[currIndex], &DButton::RightButtonPressed, this, &DWindow::RightButtonPressed);
             QObject::connect(m_buttons[currIndex], &DButton::ArrowKeyPressed, this, &DWindow::ArrowKeyPressed);
             mineField[currIndex] = 0;
         }
+}
+
+void DWindow::closeEvent(QCloseEvent *event) {
+    emit WindowClosed();
+    QWidget::closeEvent(event);
 }
 
 void DWindow::ArrowKeyPressed(int id, int key) {
@@ -51,8 +56,8 @@ void DWindow::ArrowKeyPressed(int id, int key) {
 void DWindow::RightButtonPressed(int id) {
     if (!m_buttons[id]->isEnabled())
         return;
-    m_buttons[id]->setMarked(!m_buttons[id]->isMarked());
-    m_buttons[id]->setText(m_buttons[id]->isMarked() ? "\U0001F6A9" : "");
+    m_buttons[id]->SetMarked(!m_buttons[id]->IsMarked());
+    m_buttons[id]->setText(m_buttons[id]->IsMarked() ? "\U0001F6A9" : "");
 }
 
 void DWindow::ButtonPressed(int id, bool recursive) {
@@ -60,20 +65,20 @@ void DWindow::ButtonPressed(int id, bool recursive) {
         rounds++;
     int x = id % m_height;
     int y = id / m_height;
-    if (m_buttons[id]->isMarked())
+    if (m_buttons[id]->IsMarked())
         return;
     if (isFirstClick) //generate game
         FirstClick(id);
     m_buttons[id]->setDisabled(true);
     if (mineField[id] == 1) {
         m_buttons[id]->setText("\U0001F4A3");
-        showMessageBox("You died", "<font size = 5>You stepped on a mine \U0001F915</font>", this);
+        ShowMessageBox("You died", "<font size = 5>You stepped on a mine \U0001F915</font>", this);
         ResetGame();
         return;
     } else {
-        checkNearbyTiles(x, y, id);
+        CheckNearbyTiles(x, y, id);
     }
-    checkWinCondition();
+    CheckWinCondition();
 }
 
 void DWindow::ResetGame() {
@@ -85,7 +90,7 @@ void DWindow::ResetGame() {
             mineField[index] = 0;
             m_buttons[index]->setText("");
             m_buttons[index]->setDisabled(false);
-            m_buttons[index]->setMarked(false);
+            m_buttons[index]->SetMarked(false);
         }
 }
 
@@ -110,7 +115,7 @@ void DWindow::FirstClick(int id) {
     isFirstClick = false;
 }
 
-void DWindow::checkNearbyTiles(int x, int y, int id) {
+void DWindow::CheckNearbyTiles(int x, int y, int id) {
     int minesNearby = 0;
     for (int ix = -1; ix < 2; ix++)
         for (int iy = -1; iy < 2; iy++)
@@ -128,19 +133,19 @@ void DWindow::checkNearbyTiles(int x, int y, int id) {
     }
 }
 
-void DWindow::checkWinCondition() {
+void DWindow::CheckWinCondition() {
     int totalButtonsLeft = 0;
     for (int i = 0; i < m_width * m_height; i++) {
         if (m_buttons[i]->isEnabled())
             totalButtonsLeft++;
     }
     if (totalButtonsLeft == maxMines) {
-        showMessageBox("You won", (rounds <= 3) ? "<font size = 15>\U0001F92D</font>" : "<font size = 5>You found all the mines, Gratz \U0001F970</font>", this);
+        ShowMessageBox("You won", (rounds <= 3) ? "<font size = 15>\U0001F92D</font>" : "<font size = 5>You found all the mines, Gratz \U0001F970</font>", this);
         ResetGame();
     }
 }
 
-void DWindow::showMessageBox(QString title, QString body, QWidget *parent) {
+void DWindow::ShowMessageBox(QString title, QString body, QWidget *parent) {
     QMessageBox msgBox = QMessageBox(parent);
     msgBox.setWindowTitle(title);
     msgBox.setWindowIcon(QIcon::fromTheme("dialog-warning"));

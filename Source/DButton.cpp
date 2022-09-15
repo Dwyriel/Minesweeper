@@ -5,7 +5,7 @@ DButton::DButton(QWidget *parent) : QPushButton(parent) {
     this->setAutoRepeat(false);
 }
 
-void DButton::setId(int i) {
+void DButton::SetId(int i) {
     id = i;
 }
 
@@ -28,10 +28,10 @@ void DButton::keyPressEvent(QKeyEvent *e) {
     QPushButton::keyPressEvent(e);
 }
 
-bool DButton::isMarked() {
+bool DButton::IsMarked() {
     return marked;
 }
 
-void DButton::setMarked(bool value) {
+void DButton::SetMarked(bool value) {
     marked = value;
 }
