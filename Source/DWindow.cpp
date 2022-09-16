@@ -97,9 +97,9 @@ void DWindow::ResetGame() {
 void DWindow::FirstClick(int id) {
     maxMines = maxMines > ((m_width * m_height) - 9) ? ((m_width * m_height) - 9) : maxMines;
     int mines = maxMines;
-    int lowX_lowY = id - m_width - 1, highX_lowY = id - m_width + 1;
+    int lowX_lowY = id - m_height - 1, highX_lowY = id - m_height + 1;
     int lowX_medY = id - 1, highX_medY = id + 1;
-    int lowX_highY = id + m_width - 1, highX_highY = id + m_width + 1;
+    int lowX_highY = id + m_height - 1, highX_highY = id + m_height + 1;
     std::vector<int> placesToPlant;
     for (int i = 0; i < m_width * m_height; i++){
         if((i >= lowX_lowY && i <= highX_lowY) || (i >= lowX_medY && i <= highX_medY) || (i >= lowX_highY && i <= highX_highY))
