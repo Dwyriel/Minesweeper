@@ -3,7 +3,7 @@
 ## Controls
 Click tile: LMB, Enter key, Space key.<br />
 Select tile: Arrow keys, Tab.<br />
-Place flag: RMB, F key.<br />
+Place flag: RMB, Backspace key, F key.<br />
 
 ### Pre-game grid and bomb settings
 

@@ -22,8 +22,9 @@ DWindow::DWindow(QWidget *parent) : QWidget(parent) {
             m_buttons[currIndex]->setId(currIndex);
             m_grid->addWidget(m_buttons[currIndex], y, x);
             QObject::connect(m_buttons[currIndex], &DButton::buttonPressed, this, &DWindow::buttonPressed);
-            QObject::connect(m_buttons[currIndex], &DButton::rightButtonPressed, this, &DWindow::rightButtonPressed);
+            QObject::connect(m_buttons[currIndex], &DButton::rightButtonPressed, this, &DWindow::flagKeyPressed);
             QObject::connect(m_buttons[currIndex], &DButton::arrowKeyPressed, this, &DWindow::arrowKeyPressed);
+            QObject::connect(m_buttons[currIndex], &DButton::flagKeyPress, this, &DWindow::flagKeyPressed);
             mineField[currIndex] = 0;
         }
 }
@@ -52,7 +53,7 @@ void DWindow::arrowKeyPressed(int id, int key) {
     m_buttons[nextId]->setFocus();
 }
 
-void DWindow::rightButtonPressed(int id) {
+void DWindow::flagKeyPressed(int id) {
     if (!m_buttons[id]->isEnabled())
         return;
     m_buttons[id]->setMarked(!m_buttons[id]->isMarked());

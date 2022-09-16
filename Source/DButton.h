@@ -32,6 +32,8 @@ signals:
 
     void arrowKeyPressed(int id, int key);
 
+    void flagKeyPress(int);
+
 private slots:
 
 public slots:

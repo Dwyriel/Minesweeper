@@ -43,9 +43,9 @@ private slots:
 
     bool buttonPressed(int id, bool recursive = false);
 
-    void rightButtonPressed(int id);
-
     void arrowKeyPressed(int id, int key);
+
+    void flagKeyPressed(int id);
 
 public slots:
 };

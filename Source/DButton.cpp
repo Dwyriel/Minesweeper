@@ -25,6 +25,10 @@ void DButton::keyPressEvent(QKeyEvent *e) {
         emit arrowKeyPressed(id, e->key());
         return;
     }
+    if(e->key() == Qt::Key_F || e->key() == Qt::Key_Backspace){
+        emit flagKeyPress(id);
+        return;
+    }
     QPushButton::keyPressEvent(e);
 }
 
