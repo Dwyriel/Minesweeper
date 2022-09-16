@@ -30,9 +30,9 @@ private:
 
     void firstClick(int id);
 
-    void checkWinCondition();
+    bool checkWinCondition();
 
-    void checkNearbyTiles(int x, int y, int id);
+    bool checkNearbyTiles(int x, int y, int id);
 
     static void showMessageBox(QString title, QString body, QWidget *parent = nullptr);
 
@@ -41,7 +41,7 @@ signals:
 
 private slots:
 
-    void buttonPressed(int id, bool recursive = false);
+    bool buttonPressed(int id, bool recursive = false);
 
     void rightButtonPressed(int id);
 

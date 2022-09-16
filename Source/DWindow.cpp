@@ -1,5 +1,4 @@
 #include "DWindow.h"
-
 DWindow::DWindow(QWidget *parent) : QWidget(parent) {
     this->m_height = GlobalVars::Height;
     this->m_width = GlobalVars::Width;
@@ -60,25 +59,26 @@ void DWindow::rightButtonPressed(int id) {
     m_buttons[id]->setText(m_buttons[id]->isMarked() ? "\U0001F6A9" : "");
 }
 
-void DWindow::buttonPressed(int id, bool recursive) {
+bool DWindow::buttonPressed(int id, bool recursive) {
     if(!recursive)
         rounds++;
     int x = id % m_height;
     int y = id / m_height;
     if (m_buttons[id]->isMarked())
-        return;
-    if (isFirstClick) //generate game
+        return false;
+    if (isFirstClick && !recursive) //generate game
         firstClick(id);
     m_buttons[id]->setDisabled(true);
     if (mineField[id] == 1) {
         m_buttons[id]->setText("\U0001F4A3");
         showMessageBox("You died", "<font size = 5>You stepped on a mine \U0001F915</font>", this);
         resetGame();
-        return;
+        return true;
     } else {
-        checkNearbyTiles(x, y, id);
+        if (checkNearbyTiles(x, y, id))
+            return true;
     }
-    checkWinCondition();
+    return checkWinCondition();
 }
 
 void DWindow::resetGame() {
@@ -115,7 +115,7 @@ void DWindow::firstClick(int id) {
     isFirstClick = false;
 }
 
-void DWindow::checkNearbyTiles(int x, int y, int id) {
+bool DWindow::checkNearbyTiles(int x, int y, int id) {
     int minesNearby = 0;
     for (int ix = -1; ix < 2; ix++)
         for (int iy = -1; iy < 2; iy++)
@@ -129,20 +129,24 @@ void DWindow::checkNearbyTiles(int x, int y, int id) {
             for (int iy = -1; iy < 2; iy++)
                 if (x + ix >= 0 && x + ix < m_height && y + iy >= 0 && y + iy < m_width)
                     if (m_buttons[(y + iy) * m_height + (x + ix)]->isEnabled())
-                        buttonPressed((y + iy) * m_height + (x + ix), true);
+                        if(buttonPressed((y + iy) * m_height + (x + ix), true))
+                            return true;
     }
+    return false;
 }
 
-void DWindow::checkWinCondition() {
+bool DWindow::checkWinCondition() {
     int totalButtonsLeft = 0;
     for (int i = 0; i < m_width * m_height; i++) {
         if (m_buttons[i]->isEnabled())
             totalButtonsLeft++;
     }
     if (totalButtonsLeft == maxMines) {
-        showMessageBox("You won", (rounds <= 3) ? "<font size = 15>\U0001F92D</font>" : "<font size = 5>You found all the mines, Gratz \U0001F970</font>", this);
+        showMessageBox("You won", (rounds <= 3) ? "<font size = 5>No cheating \U0001F92D</font>" : "<font size = 5>You found all the mines, Gratz \U0001F970</font>", this);
         resetGame();
+        return true;
     }
+    return false;
 }
 
 void DWindow::showMessageBox(QString title, QString body, QWidget *parent) {
