@@ -26,26 +26,26 @@ private:
     int *mineField = nullptr;
     bool isFirstClick = true;
 
-    void ResetGame();
+    void resetGame();
 
-    void FirstClick(int id);
+    void firstClick(int id);
 
-    void CheckWinCondition();
+    void checkWinCondition();
 
-    void CheckNearbyTiles(int x, int y, int id);
+    void checkNearbyTiles(int x, int y, int id);
 
-    static void ShowMessageBox(QString title, QString body, QWidget *parent = nullptr);
+    static void showMessageBox(QString title, QString body, QWidget *parent = nullptr);
 
 signals:
-    void WindowClosed();
+    void windowClosed();
 
 private slots:
 
-    void ButtonPressed(int id, bool recursive = false);
+    void buttonPressed(int id, bool recursive = false);
 
-    void RightButtonPressed(int id);
+    void rightButtonPressed(int id);
 
-    void ArrowKeyPressed(int id, int key);
+    void arrowKeyPressed(int id, int key);
 
 public slots:
 };

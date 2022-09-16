@@ -1,5 +1,4 @@
 #include <QApplication>
-#include "Source/DWindow.h"
 #include "Source/GameSettings.h"
 
 int main(int argc, char *argv[]) {

@@ -46,17 +46,17 @@ GameSettings::GameSettings(QWidget *parent) {
     //m_playButton
     m_playButton = new QPushButton(QObject::tr("Play"), this);
     m_playButton->setGeometry(42, 85, 90, 25);
-    connect(m_playButton, &QPushButton::clicked, this, &GameSettings::PlayButtonPressed);
+    connect(m_playButton, &QPushButton::clicked, this, &GameSettings::playButtonPressed);
 }
 
-void GameSettings::PlayButtonPressed() {
+void GameSettings::playButtonPressed() {
     int x, y, mines;
     x = m_xLineEdit->text().toInt();
     y = m_yLineEdit->text().toInt();
     mines = m_minesLineEdit->text().toInt();
     if (x < 5 || y < 5 || mines <= 4) {
         QString str = mines <= 4 ? "Too few mines" : ((x < 5 ? "X " : "Y ") + QString("") + "can't be smaller than 5");
-        ShowError(str);
+        showError(str);
         return;
     }
     m_errorLabel->hide();
@@ -68,16 +68,16 @@ void GameSettings::PlayButtonPressed() {
     m_window->setWindowFlags(Qt::Window);
     m_window->setAttribute(Qt::WA_DeleteOnClose, true);
     //QObject::connect(m_window, SIGNAL(destroyed(QObject*)), this, SLOT(show()));
-    QObject::connect(m_window, &DWindow::WindowClosed, this, &GameSettings::ChildWindowClosed);
+    QObject::connect(m_window, &DWindow::windowClosed, this, &GameSettings::childWindowClosed);
     m_window->show();
 }
 
-void GameSettings::ShowError(const QString &error) {
+void GameSettings::showError(const QString &error) {
     m_errorLabel->setText(error);
     m_errorLabel->show();
 }
 
-void GameSettings::ChildWindowClosed(){
+void GameSettings::childWindowClosed(){
     this->show();
     delete m_window;
     m_window = nullptr;

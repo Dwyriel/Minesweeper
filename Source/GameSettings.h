@@ -20,13 +20,13 @@ private:
     QPushButton *m_playButton;
     DWindow *m_window;
 
-    void ShowError(const QString &error);
+    void showError(const QString &error);
 
 private slots:
 
-    void ChildWindowClosed();
+    void childWindowClosed();
 
-    void PlayButtonPressed();
+    void playButtonPressed();
 };
 
 

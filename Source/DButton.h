@@ -10,11 +10,11 @@ Q_OBJECT
 public:
     explicit DButton(QWidget *parent = 0);
 
-    void SetId(int i);
+    void setId(int i);
 
-    bool IsMarked();
+    bool isMarked();
 
-    void SetMarked(bool value);
+    void setMarked(bool value);
 
 protected:
     void mousePressEvent(QMouseEvent *e) override;
@@ -26,11 +26,11 @@ private:
     bool marked = false;
 
 signals:
-    void ButtonPressed(int id, bool rec);
+    void buttonPressed(int id, bool rec);
 
-    void RightButtonPressed(int id);
+    void rightButtonPressed(int id);
 
-    void ArrowKeyPressed(int id, int key);
+    void arrowKeyPressed(int id, int key);
 
 private slots:
 

@@ -20,21 +20,21 @@ DWindow::DWindow(QWidget *parent) : QWidget(parent) {
             //m_buttons[currIndex]->setText(QString::fromStdString(std::to_string(x) + "," + std::to_string(y)));
             m_buttons[currIndex]->setMinimumSize(buttonSize, buttonSize);
             m_buttons[currIndex]->setMaximumSize(buttonSize * 10, buttonSize * 10);
-            m_buttons[currIndex]->SetId(currIndex);
+            m_buttons[currIndex]->setId(currIndex);
             m_grid->addWidget(m_buttons[currIndex], y, x);
-            QObject::connect(m_buttons[currIndex], &DButton::ButtonPressed, this, &DWindow::ButtonPressed);
-            QObject::connect(m_buttons[currIndex], &DButton::RightButtonPressed, this, &DWindow::RightButtonPressed);
-            QObject::connect(m_buttons[currIndex], &DButton::ArrowKeyPressed, this, &DWindow::ArrowKeyPressed);
+            QObject::connect(m_buttons[currIndex], &DButton::buttonPressed, this, &DWindow::buttonPressed);
+            QObject::connect(m_buttons[currIndex], &DButton::rightButtonPressed, this, &DWindow::rightButtonPressed);
+            QObject::connect(m_buttons[currIndex], &DButton::arrowKeyPressed, this, &DWindow::arrowKeyPressed);
             mineField[currIndex] = 0;
         }
 }
 
 void DWindow::closeEvent(QCloseEvent *event) {
-    emit WindowClosed();
+    emit windowClosed();
     QWidget::closeEvent(event);
 }
 
-void DWindow::ArrowKeyPressed(int id, int key) {
+void DWindow::arrowKeyPressed(int id, int key) {
     int y = id % m_height;
     int x = id / m_height;
     y = y + (key == Qt::Key_Up ? -1 : 1);
@@ -49,39 +49,39 @@ void DWindow::ArrowKeyPressed(int id, int key) {
     //y = y < 0 ? m_height - 1 : y >= m_height ? 0 : y;
     int nextId = x * m_height + y;
     if (!m_buttons[nextId]->isEnabled())
-        ArrowKeyPressed(nextId, key);
+        arrowKeyPressed(nextId, key);
     m_buttons[nextId]->setFocus();
 }
 
-void DWindow::RightButtonPressed(int id) {
+void DWindow::rightButtonPressed(int id) {
     if (!m_buttons[id]->isEnabled())
         return;
-    m_buttons[id]->SetMarked(!m_buttons[id]->IsMarked());
-    m_buttons[id]->setText(m_buttons[id]->IsMarked() ? "\U0001F6A9" : "");
+    m_buttons[id]->setMarked(!m_buttons[id]->isMarked());
+    m_buttons[id]->setText(m_buttons[id]->isMarked() ? "\U0001F6A9" : "");
 }
 
-void DWindow::ButtonPressed(int id, bool recursive) {
+void DWindow::buttonPressed(int id, bool recursive) {
     if(!recursive)
         rounds++;
     int x = id % m_height;
     int y = id / m_height;
-    if (m_buttons[id]->IsMarked())
+    if (m_buttons[id]->isMarked())
         return;
     if (isFirstClick) //generate game
-        FirstClick(id);
+        firstClick(id);
     m_buttons[id]->setDisabled(true);
     if (mineField[id] == 1) {
         m_buttons[id]->setText("\U0001F4A3");
-        ShowMessageBox("You died", "<font size = 5>You stepped on a mine \U0001F915</font>", this);
-        ResetGame();
+        showMessageBox("You died", "<font size = 5>You stepped on a mine \U0001F915</font>", this);
+        resetGame();
         return;
     } else {
-        CheckNearbyTiles(x, y, id);
+        checkNearbyTiles(x, y, id);
     }
-    CheckWinCondition();
+    checkWinCondition();
 }
 
-void DWindow::ResetGame() {
+void DWindow::resetGame() {
     isFirstClick = true;
     rounds = 0;
     for (int y = 0; y < m_height; y++)
@@ -90,11 +90,11 @@ void DWindow::ResetGame() {
             mineField[index] = 0;
             m_buttons[index]->setText("");
             m_buttons[index]->setDisabled(false);
-            m_buttons[index]->SetMarked(false);
+            m_buttons[index]->setMarked(false);
         }
 }
 
-void DWindow::FirstClick(int id) {
+void DWindow::firstClick(int id) {
     maxMines = maxMines > ((m_width * m_height) - 9) ? ((m_width * m_height) - 9) : maxMines;
     int mines = maxMines;
     int lowX_lowY = id - m_height - 1, highX_lowY = id - m_height + 1;
@@ -115,7 +115,7 @@ void DWindow::FirstClick(int id) {
     isFirstClick = false;
 }
 
-void DWindow::CheckNearbyTiles(int x, int y, int id) {
+void DWindow::checkNearbyTiles(int x, int y, int id) {
     int minesNearby = 0;
     for (int ix = -1; ix < 2; ix++)
         for (int iy = -1; iy < 2; iy++)
@@ -129,23 +129,23 @@ void DWindow::CheckNearbyTiles(int x, int y, int id) {
             for (int iy = -1; iy < 2; iy++)
                 if (x + ix >= 0 && x + ix < m_height && y + iy >= 0 && y + iy < m_width)
                     if (m_buttons[(y + iy) * m_height + (x + ix)]->isEnabled())
-                        ButtonPressed((y + iy) * m_height + (x + ix), true);
+                        buttonPressed((y + iy) * m_height + (x + ix), true);
     }
 }
 
-void DWindow::CheckWinCondition() {
+void DWindow::checkWinCondition() {
     int totalButtonsLeft = 0;
     for (int i = 0; i < m_width * m_height; i++) {
         if (m_buttons[i]->isEnabled())
             totalButtonsLeft++;
     }
     if (totalButtonsLeft == maxMines) {
-        ShowMessageBox("You won", (rounds <= 3) ? "<font size = 15>\U0001F92D</font>" : "<font size = 5>You found all the mines, Gratz \U0001F970</font>", this);
-        ResetGame();
+        showMessageBox("You won", (rounds <= 3) ? "<font size = 15>\U0001F92D</font>" : "<font size = 5>You found all the mines, Gratz \U0001F970</font>", this);
+        resetGame();
     }
 }
 
-void DWindow::ShowMessageBox(QString title, QString body, QWidget *parent) {
+void DWindow::showMessageBox(QString title, QString body, QWidget *parent) {
     QMessageBox msgBox = QMessageBox(parent);
     msgBox.setWindowTitle(title);
     msgBox.setWindowIcon(QIcon::fromTheme("dialog-warning"));

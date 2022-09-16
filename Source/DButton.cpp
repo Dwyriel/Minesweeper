@@ -5,33 +5,33 @@ DButton::DButton(QWidget *parent) : QPushButton(parent) {
     this->setAutoRepeat(false);
 }
 
-void DButton::SetId(int i) {
+void DButton::setId(int i) {
     id = i;
 }
 
 void DButton::mousePressEvent(QMouseEvent *e) {
     if (e->button() == Qt::RightButton)
-        emit RightButtonPressed(id);
+        emit rightButtonPressed(id);
     if (e->button() == Qt::LeftButton)
-        emit ButtonPressed(id, false);
+        emit buttonPressed(id, false);
 }
 
 void DButton::keyPressEvent(QKeyEvent *e) {
     if ((e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return || e->key() == Qt::Key_Space) && !e->isAutoRepeat()) {
-        emit ButtonPressed(id, false);
+        emit buttonPressed(id, false);
         return;
     }
     if(e->key() == Qt::Key_Up || e->key() == Qt::Key_Down){
-        emit ArrowKeyPressed(id, e->key());
+        emit arrowKeyPressed(id, e->key());
         return;
     }
     QPushButton::keyPressEvent(e);
 }
 
-bool DButton::IsMarked() {
+bool DButton::isMarked() {
     return marked;
 }
 
-void DButton::SetMarked(bool value) {
+void DButton::setMarked(bool value) {
     marked = value;
 }
