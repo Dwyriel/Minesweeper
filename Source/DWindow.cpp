@@ -45,7 +45,7 @@ void DWindow::arrowKeyPressed(int id, int key) {
         y = 0;
         x++;
     }
-    x = (x < 0) ? m_width - 1 : (x >= m_width) ? x = 0 : x;
+    x = (x < 0) ? m_width - 1 : (x >= m_width) ? 0 : x;
     //y = y < 0 ? m_height - 1 : y >= m_height ? 0 : y;
     int nextId = x * m_height + y;
     if (!m_buttons[nextId]->isEnabled())
